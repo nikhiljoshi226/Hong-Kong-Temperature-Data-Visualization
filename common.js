@@ -338,22 +338,24 @@ function formatTooltipText(record, separator) {
 
 /**
  * Shows a tooltip that follows the mouse while it is over a cell.
+ * The text is rebuilt on every mouse move, so it can depend on where
+ * inside the cell the pointer is (Level 2 uses this to show the day
+ * under the pointer).
  * @param {d3.Selection} cells - elements bound to monthly records
- * @param {Function} getText - turns a monthly record into the tooltip text
+ * @param {Function} getText - (record, event) -> the tooltip text
  */
 function attachTooltip(cells, getText) {
   const tooltip = d3.select(SHARED_CONFIG.tooltipElement);
 
-  const moveToPointer = event => tooltip
+  const showAtPointer = (event, record) => tooltip
+    .text(getText(record, event))
+    .style("opacity", 1)
     .style("left", `${event.pageX + SHARED_CONFIG.tooltipOffset.x}px`)
     .style("top", `${event.pageY + SHARED_CONFIG.tooltipOffset.y}px`);
 
   cells
-    .on("mouseover", (event, record) => {
-      tooltip.text(getText(record)).style("opacity", 1);
-      moveToPointer(event);
-    })
-    .on("mousemove", moveToPointer)
+    .on("mouseover", showAtPointer)
+    .on("mousemove", showAtPointer)
     .on("mouseout", () => tooltip.style("opacity", 0));
 }
 

@@ -49,7 +49,7 @@ const LEVEL2_CONFIG = {
     offsetFromTop: 30              // room above the swatches for the header
   },
 
-  tooltipSeparator: ", "           // "Date: 2012-04, max: 31 min: 19"
+  tooltipSeparator: ", "           // "Date: 2012-04, max: 31 min: 28"
 };
 
 // ============================================================
@@ -184,6 +184,45 @@ function drawLevel2Legend(chartArea, matrixScales) {
 }
 
 // ============================================================
+// Interaction
+// ============================================================
+
+/**
+ * Finds the day whose point on the mini line chart is closest to the
+ * mouse pointer.
+ * @param {Object} record - the monthly record of the hovered cell
+ * @param {MouseEvent} event - the mouse event over that cell
+ * @param {Object} miniChartScales - output of createMiniChartScales
+ * @returns {Object} one entry of record.days
+ */
+function findDayUnderPointer(record, event, miniChartScales) {
+  // Pointer position inside the cell (its group is already moved to the cell)
+  const [pointerX] = d3.pointer(event, event.currentTarget);
+  const pointerDay = miniChartScales.dayX.invert(pointerX);
+  return d3.least(record.days, day => Math.abs(day.dayOfMonth - pointerDay));
+}
+
+/**
+ * Builds the Level 2 tooltip text: the month, plus the maximum and
+ * minimum temperature of the day under the pointer, e.g.
+ * "Date: 2012-04, max: 31 min: 28" near the end of April 2012.
+ * @param {Object} record - the monthly record of the hovered cell
+ * @param {MouseEvent} event - the mouse event over that cell
+ * @param {Object} miniChartScales - output of createMiniChartScales
+ * @returns {string} the tooltip text
+ */
+function formatLevel2TooltipText(record, event, miniChartScales) {
+  const hoveredDay = findDayUnderPointer(record, event, miniChartScales);
+  const hoveredValues = {
+    year: record.year,
+    month: record.month,
+    maxTemperature: hoveredDay.maxTemperature,
+    minTemperature: hoveredDay.minTemperature
+  };
+  return formatTooltipText(hoveredValues, LEVEL2_CONFIG.tooltipSeparator);
+}
+
+// ============================================================
 // Level 2 entry point (called by app.js)
 // ============================================================
 
@@ -208,9 +247,9 @@ function drawLevel2Heatmap(dailyRecords) {
   drawDailyLines(cells, miniChartScales);
   const legendGroup = drawLevel2Legend(chartArea, matrixScales);
 
-  // Interaction: hover tooltip, click a cell to switch the background between max and min
-  attachTooltip(cells, record => formatTooltipText(record, LEVEL2_CONFIG.tooltipSeparator));
+  // Interaction: tooltip for the day under the pointer, click a cell to switch max / min
+  attachTooltip(cells, (record, event) =>
+    formatLevel2TooltipText(record, event, miniChartScales));
   attachModeSwitch(cells, legendGroup,
     newMode => colorByMode(cells.select(".cell-background"), colorScale, newMode, true));
 }
-
