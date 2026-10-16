@@ -1,0 +1,66 @@
+/* ============================================================
+   Shared styles for both heatmap pages
+   ============================================================ */
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 20px;
+  background: #ffffff;
+}
+
+/* Level 1 / Level 2 toggle above the chart */
+#level-toggle {
+  margin-bottom: 12px;
+}
+
+#level-toggle button {
+  padding: 6px 12px;
+  margin-right: 6px;
+  font-size: 13px;
+  background: #f2f2f2;
+  border: 1px solid #bbbbbb;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* The level currently shown */
+#level-toggle button.active {
+  background: #333333;
+  border-color: #333333;
+  color: #ffffff;
+}
+
+/* Matrix cells can be clicked to switch between max and min */
+.cell {
+  cursor: pointer;
+}
+
+/* Level 2 mini line charts: lines only, and they must not block hovering the cell */
+.daily-line {
+  fill: none;
+  pointer-events: none;
+}
+
+.legend-title {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.legend-hint {
+  font-size: 11px;
+  fill: #555555;
+}
+
+.legend-label {
+  font-size: 11px;
+}
+
+/* Tooltip follows the mouse; hidden until a cell is hovered */
+#tooltip {
+  position: absolute;
+  padding: 6px 10px;
+  background: #ffffff;
+  font-size: 12px;
+  pointer-events: none;
+  opacity: 0;
+}

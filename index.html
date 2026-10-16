@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Hong Kong Temperature Heatmap</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Level 1 / Level 2 buttons, created by app.js -->
+  <div id="level-toggle"></div>
+
+  <div id="chart"></div>
+  <div id="tooltip"></div>
+
+  <!-- Order matters: D3, shared helpers, each level, then the page entry point -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="common.js"></script>
+  <script src="Level1_main.js"></script>
+  <script src="Level2_main.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
